@@ -13,7 +13,11 @@ public class BoardManager : MonoBehaviour {
 
 
 	//private List <Vector3> ItemsPos = new List <Vector3> ();
-	private List <Vector3> ForbiddenPos = new List <Vector3> ();
+	[HideInInspector]
+	public List <Vector3> ForbiddenPos = new List <Vector3> ();
+	[HideInInspector]
+	public List <Vector3> SolidTile = new List <Vector3> ();
+
 	private Transform boardholder;
 	private Transform destructibles;
 
@@ -33,13 +37,15 @@ public class BoardManager : MonoBehaviour {
 		ForbiddenPos.Add (new Vector3 ((columns - 2), (rows - 2), 0.0f));
 		ForbiddenPos.Add (new Vector3 ((columns - 2), (rows - 3), 0.0f));
 		BoardConstructor ();
-		InteractiveLocator (DestWallTile, 140, 140);
+		//InteractiveLocator (DestWallTile, 140, 140);
 	
 	}
 	//Algoritmo de construccion del tablero.
 	void BoardConstructor(){
 
-		//Se crea un nuevo GameObject y se asigna su "transform" a la variable boardholder
+		//
+        
+        //Se crea un nuevo GameObject y se asigna su "transform" a la variable boardholder
 		boardholder = new GameObject ("Board").transform;
 
 		//Loop para definir las coordenadas de cada "tile" del tablero
@@ -50,9 +56,10 @@ public class BoardManager : MonoBehaviour {
 				GameObject toInstantiate = FloorTile;
 
 				//Una condicional que definirá que si "i" o "j" tienen valor 0 o el de la columna-1 entonces redefine la variable "toInstantiate"
-				if (i == 0 || i == (columns - 1) || j == 0 || j == (columns - 1) || ( i % 2 == 0 && j %2 == 0)) {
+				if (i == 0 || i == (rows - 1) || j == 0 || j == (columns - 1) || ( i % 2 == 0 && j %2 == 0)) {
 					toInstantiate = SolidWall;
 					ForbiddenPos.Add (new Vector3 (i, j, 0.0f));
+					SolidTile.Add (new Vector3 (i, j, 0.0f));
 				}
 
 				//Se almacena la instancia generada en una variable llamada "instance" y como dato GameObject para luego usar su transform y emparentarlo con
@@ -63,7 +70,7 @@ public class BoardManager : MonoBehaviour {
 		}
 	}
 
-	List <Vector3> GridMapping(){
+	public List <Vector3> GridMapping(){
 
 		List <Vector3> GridMap = new List <Vector3> ();
 

@@ -1,18 +1,20 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 
 public class PlayerControl : MonoBehaviour {
 
 
 	public float speed;
 	public GameObject bomb;
+	[HideInInspector]
+	public int SetBomb;
+	public int FirePower = 1;
 
 	private int BombLimit;
-	private int SetBomb;
 	private Rigidbody2D _rb;
 
-	// Use this for initialization
-	void Start () {
+    void OnEnable () {
+		FirePower = 3;
 		BombLimit = 1;
 		SetBomb = 0;
 
@@ -25,6 +27,13 @@ public class PlayerControl : MonoBehaviour {
 		LeaveBomb ();
 	}
 
+	Vector3 PositionComparison(float X, float Y){
+		float PosX = Mathf.Round(X);
+		float PosY = Mathf.Round(Y);
+		Vector3 PosAsInt = new Vector3 (PosX, PosY, 0.0f);
+		return PosAsInt;
+	}
+
 	void PlayerMovement(){
 		float h = Input.GetAxis ("Horizontal");
 		float v = Input.GetAxis ("Vertical");
@@ -35,14 +44,11 @@ public class PlayerControl : MonoBehaviour {
 
 	void LeaveBomb (){
 		if (Input.GetKeyDown (KeyCode.Space) && SetBomb <= BombLimit) {
-			SetBomb++; 
-			GameObject BombInstance = Instantiate (bomb, transform.position, Quaternion.identity) as GameObject;
-			BombDetonation (BombInstance);
+			SetBomb++;
+			Vector3 BombPos = PositionComparison (transform.position.x, transform.position.y);
+			GameObject BombInstance = Instantiate (bomb, BombPos, Quaternion.identity) as GameObject;
+			BombInstance.GetComponent<BombControl> ().FirePower = FirePower;
 		}
 	}
-
-	void BombDetonation (GameObject bomb){
-		Destroy (bomb, 3.0f);
-		SetBomb--;
-	}
 }
+
